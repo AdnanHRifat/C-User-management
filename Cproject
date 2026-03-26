@@ -1,0 +1,124 @@
+
+#include <stdio.h>
+#include <string.h>
+#define MAX_USERS 10
+#define MAX_TRANSACTIONS 100
+typedef struct
+{
+    char username[20];
+    char password[20];
+} User;
+typedef struct
+{
+    char date[15];
+    float amount;
+    char category[20];
+    char description[10];
+} Transaction;
+User users[MAX_USERS];
+int userCount = 0;
+Transaction transactions[MAX_TRANSACTIONS];
+int transactionCount = 0;
+void registerUser()
+{
+    if (userCount >= MAX_USERS)
+    {
+        printf("User limit reached.\n");
+        return;
+    }
+    printf("Enter username and password:\n");
+    scanf("%s %s", users[userCount].username, users[userCount].password);
+    printf("User registered successfully.\n");
+    userCount++;
+}
+int loginUser()
+{
+    char username[20], password[20];
+    printf("Enter username and password:\n");
+    scanf("%s %s", username, password);
+    for (int i = 0; i < userCount; i++)
+    {
+        if (strcmp(users[i].username, username) == 0 &&
+            strcmp(users[i].password, password) == 0)
+            return i;
+    }
+    return -1;
+}
+void addTransaction()
+{
+    if (userCount == 0)
+    {
+        printf("Please register or login first.\n");
+        return;
+    }
+    if (transactionCount >= MAX_TRANSACTIONS)
+    {
+        printf("Transaction limit reached.\n");
+        return;
+    }
+    printf("Enter transaction details:\n");
+    scanf("%s %f %s %s",
+          transactions[transactionCount].date,
+          &transactions[transactionCount].amount,
+          transactions[transactionCount].category,
+          transactions[transactionCount].description);
+    printf("Transaction added successfully.\n");
+    transactionCount++;
+}
+void showFinancialSummary()
+{
+    float totalIncome = 0, totalExpense = 0;
+    printf("\nFinancial Summary\n");
+    printf("----------------------------\n");
+    for (int i = 0; i < transactionCount; i++)
+    {
+        printf("Date: %s | Amount: %.2f | Category: %s | Description: %s\n",
+               transactions[i].date, transactions[i].amount,
+               transactions[i].category, transactions[i].description);
+        (transactions[i].amount > 0) ? (totalIncome += transactions[i].amount) : (totalExpense += transactions[i].amount);
+    }
+    printf("\nTotal Income: %.2f\n", totalIncome);
+    printf("Total Expense: %.2f\n", totalExpense);
+    printf("Net Balance: %.2f\n", totalIncome + totalExpense);
+}
+int main()
+{
+    int choice;
+    while (1)
+    {
+        printf("\nFinancial Management System\n");
+        printf("1. Register User\n");
+        printf("2. Login\n");
+        printf("3. Add Transaction\n");
+        printf("4. View Financial Summary\n");
+        printf("0. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        if (choice == 0)
+        {
+            printf("Exiting. Goodbye!\n");
+            break;
+        }
+        if (choice == 1)
+        {
+            registerUser();
+        }
+        else if (choice == 2)
+        {
+            (loginUser() != -1) ? printf("Login successful!\n") : printf("Login failed.\n");
+        }
+        else if (choice == 3)
+        {
+            addTransaction();
+        }
+        else if (choice == 4)
+        {
+            showFinancialSummary();
+        }
+        else
+        {
+            printf("Invalid choice. Try again.\n");
+        }
+    }
+    return 0;
+}
